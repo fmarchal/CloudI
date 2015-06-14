@@ -5,6 +5,11 @@
 
     * Fix vim modified flag at opening file
 
+2015-06-13 Michael Truog   <mjtruog [at] gmail (dot) com>
+
+    * Fix service configuration option request_timeout_immediate_max usage
+      in combination with queue_limit, queue_size, and/or rate_request_max 
+
 2015-06-06 Michael Truog   <mjtruog [at] gmail (dot) com>
 
     * Fix node.js detection for v0.12 usage of 'nodejs' binary
