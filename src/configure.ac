@@ -49,8 +49,10 @@ AC_ARG_WITH([version],
     ],
     [cloudi_prefix="$libdir/cloudi-$VERSION"])
 AC_SUBST(cloudi_prefix)
-AC_SUBST(cloudi_logdir, ["$localstatedir/log/cloudi"])
-AC_SUBST(cloudi_confdir, ["$sysconfdir/cloudi"])
+eval cloudi_logdir="\"[$]localstatedir/log/cloudi\""
+AC_SUBST(cloudi_logdir)
+eval cloudi_confdir="\"[$]sysconfdir/cloudi\""
+AC_SUBST(cloudi_confdir)
 AC_SUBST(cloudi_bindir, ["$cloudi_prefix/bin"])
 
 AC_SUBST(CLOUDI_TMP_BIN_SCRIPT,
@@ -519,13 +521,14 @@ if test "x$want_service" = "xyes"; then
 fi
 
 if test "x$integration_tests_ran" = "xtrue" ; then
-    AC_CONFIG_FILES([cloudi.conf])
+    CLOUDI_CONF="cloudi_tests.conf"
 else
-    AC_CONFIG_COMMANDS([cloudi.conf.empty],
-        [echo "{acl,[[]]}. {services,[[]]}. {nodes,[[]]}. {logging,[[]]}." > \
-         cloudi.conf])
+    CLOUDI_CONF="cloudi_minimal.conf"
 fi
+AC_SUBST(CLOUDI_CONF)
 AC_CONFIG_FILES([
+    cloudi_tests.conf
+    cloudi_minimal.conf
     rebar_src.config
     rebar_src_test.config
     reltool.config
@@ -533,17 +536,20 @@ AC_CONFIG_FILES([
     lib/cloudi_service_api_requests/src/cloudi_service_api_requests.app.src
     lib/cloudi_service_db/src/cloudi_service_db.app.src
     lib/cloudi_service_db_cassandra/src/cloudi_service_db_cassandra.app.src
+    lib/cloudi_service_db_cassandra_cql/src/cloudi_service_db_cassandra_cql.app.src
     lib/cloudi_service_db_couchdb/src/cloudi_service_db_couchdb.app.src
     lib/cloudi_service_db_elasticsearch/src/cloudi_service_db_elasticsearch.app.src
     lib/cloudi_service_db_memcached/src/cloudi_service_db_memcached.app.src
     lib/cloudi_service_db_mysql/src/cloudi_service_db_mysql.app.src
     lib/cloudi_service_db_pgsql/src/cloudi_service_db_pgsql.app.src
+    lib/cloudi_service_db_riak/src/cloudi_service_db_riak.app.src
     lib/cloudi_service_db_tokyotyrant/src/cloudi_service_db_tokyotyrant.app.src
     lib/cloudi_service_filesystem/src/cloudi_service_filesystem.app.src
     lib/cloudi_service_http_client/src/cloudi_service_http_client.app.src
     lib/cloudi_service_http_cowboy/src/cloudi_service_http_cowboy.app.src
     lib/cloudi_service_http_elli/src/cloudi_service_http_elli.app.src
     lib/cloudi_service_map_reduce/src/cloudi_service_map_reduce.app.src
+    lib/cloudi_service_oauth1/src/cloudi_service_oauth1.app.src
     lib/cloudi_service_queue/src/cloudi_service_queue.app.src
     lib/cloudi_service_quorum/src/cloudi_service_quorum.app.src
     lib/cloudi_service_router/src/cloudi_service_router.app.src
@@ -574,6 +580,10 @@ AC_CONFIG_FILES([
     lib/cloudi_core/Makefile
     lib/cloudi_core/cxx_src/Makefile
     service_api/Makefile
+    service_api/dashboard/Makefile
+    service_api/dashboard/css/Makefile
+    service_api/dashboard/css/images/Makefile
+    service_api/dashboard/js/Makefile
     service_api/python/Makefile
     service_api/python/jsonrpclib/Makefile
     tests/Makefile
